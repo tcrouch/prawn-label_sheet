@@ -1,0 +1,11 @@
+AllCops:
+  TargetRubyVersion: 2.5
+
+Layout/AlignArguments:
+  EnforcedStyle: with_fixed_indentation
+Layout/AlignParameters:
+  EnforcedStyle: with_fixed_indentation
+Layout/MultilineMethodCallIndentation:
+  EnforcedStyle: indented
+Layout/MultilineOperationIndentation:
+  EnforcedStyle: indented

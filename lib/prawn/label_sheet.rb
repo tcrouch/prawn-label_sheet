@@ -1,4 +1,6 @@
-require "prawn/label_sheet/version"
+# frozen_string_literal: true
+
+require 'prawn/label_sheet/version'
 
 module Prawn
   module LabelSheet
