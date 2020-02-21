@@ -1,5 +1,7 @@
 # Prawn::LabelSheet
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/28933c41f8ed4d39a1c96a5895de2343)](https://app.codacy.com/manual/t.crouch/prawn-label_sheet?utm_source=github.com&utm_medium=referral&utm_content=tcrouch/prawn-label_sheet&utm_campaign=Badge_Grade_Dashboard)
+
 Generate sets of labels or stickers using Prawn PDF.
 
 For simple bulk generation, can break page between groups of data.
