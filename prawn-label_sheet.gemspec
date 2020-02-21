@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.description   = <<~DESCRIPTION
     Generate sets of labels or stickers programmatically using Prawn PDF.
   DESCRIPTION
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = 'https://github.com/tcrouch/prawn-label_sheet'
   spec.license       = 'MIT'
 
   # Specify which files should be added to the gem when it is released.
@@ -27,8 +27,14 @@ Gem::Specification.new do |spec|
   spec.bindir        = 'exe'
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
+  spec.required_ruby_version = ">= 2.4.0"
+
+  spec.add_dependency 'polyfill', '~> 1.1.0'
+  spec.add_dependency 'prawn'
 
   spec.add_development_dependency 'bundler', '~> 2.0'
   spec.add_development_dependency 'rake', '~> 10.0'
+  spec.add_development_dependency 'relaxed-rubocop', '~> 2.4'
   spec.add_development_dependency 'rspec', '~> 3.0'
+  spec.add_development_dependency 'rubocop', '~> 0.74'
 end

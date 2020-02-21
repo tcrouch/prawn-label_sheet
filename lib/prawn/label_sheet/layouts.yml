@@ -1,0 +1,17 @@
+# Combined config for Prawn document and grid
+# 
+# defaults:
+#   page_size: A4
+#   top_margin: 40
+#   left_margin: 20
+#
+Avery7160:
+  bottom_margin: 43.9
+  column_gutter: 7.08662
+  columns: 3
+  left_margin: 19.843
+  page_size: A4
+  right_margin: 19.843
+  row_gutter: 0
+  rows: 7
+  top_margin: 43.9

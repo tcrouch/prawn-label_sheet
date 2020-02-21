@@ -1,5 +1,8 @@
+inherit_gem:
+  relaxed-rubocop: .rubocop.yml
+
 AllCops:
-  TargetRubyVersion: 2.5
+  TargetRubyVersion: 2.4
 
 Layout/AlignArguments:
   EnforcedStyle: with_fixed_indentation
@@ -9,3 +12,14 @@ Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented
 Layout/MultilineOperationIndentation:
   EnforcedStyle: indented
+
+Metrics/BlockLength:
+  Exclude:
+    - example/**/*.rb
+
+Style/TrivialAccessors:
+  Exclude:
+    - lib/prawn/label_sheet/configuration.rb
+Style/Documentation:
+  Exclude:
+    - lib/prawn/label_sheet/configuration.rb

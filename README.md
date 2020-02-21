@@ -2,6 +2,8 @@
 
 Generate sets of labels or stickers using Prawn PDF.
 
+For simple bulk generation, can break page between groups of data.
+
 ## Installation
 
 Add this line to your application's Gemfile:
@@ -12,15 +14,93 @@ gem 'prawn-label_sheet'
 
 And then execute:
 
-    $ bundle
+```shell
+$ bundle
+```
 
 Or install it yourself as:
 
-    $ gem install prawn-label_sheet
+```shell
+$ gem install prawn-label_sheet
+```
 
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+items = %w[red orange yellow green blue indigo violet]
+
+Prawn::LabelSheet.generate("out.pdf", items) do |pdf, item|
+  pdf.text_box item
+end
+```
+
+Each item is passed to the block, together with a bounding box for the label.
+
+For larger sets, page breaks can be inserted on change of value:
+
+```ruby
+# Change in value returned from item[3]
+generate("out.pdf", items, break_on: 3)
+
+# Change in value returned from proc
+generate("out.pdf", items, break_on: ->(item) { item.downcase })
+```
+
+### Example
+
+In a school you might want a single document with labels for all students,
+where a new sheets is started for each class.
+
+Given your class data, pre-sorted by [class, last, first]:
+
+```csv
+Arthur,Aardvark,1234,Class A
+Sam,Smith,1235,Class A
+Bob,Bobbington,1236,Class B
+Leah,Lemon,1237,Class B
+```
+
+```ruby
+csv = CSV.read("students.csv")
+
+Prawn::LabelSheet.generate("out.pdf", csv, break_on: 3) do |pdf, data|
+  last_name, first_name, class_name, student_id = data
+
+  b = pdf.bounds
+  full_width = b.width - 12
+  half_width = (full_width / 2).floor - 1
+
+  pdf.font 'Helvetica'
+
+  pdf.move_down 12
+  pdf.indent(6) do
+    pdf.text_box "#{last_name} #{first_name}",
+      at: [b.left, pdf.cursor],
+      width: full_width, height: 12,
+      overflow: :truncate
+  end
+  pdf.move_down 12
+  pdf.stroke_horizontal_rule
+  pdf.move_down 6
+  pdf.font_size 7 do
+    pdf.text_box "ID",
+      at: [b.left, pdf.cursor],
+      width: half_width, height: 8
+    pdf.text_box "Class",
+      at: [b.right - half_width, pdf.cursor],
+      width: half_width, height: 8
+  end
+  pdf.move_down 9
+  pdf.text_box student_id,
+    at: [b.left, pdf.cursor],
+    width: half_width, height: 10,
+    overflow: :shrink_to_fit
+  pdf.text_box class_name,
+    at: [b.right - half_width, pdf.cursor],
+    width: half_width, height: 10,
+    overflow: :shrink_to_fit
+end
+```
 
 ## Development
 
