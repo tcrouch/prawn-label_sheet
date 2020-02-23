@@ -6,6 +6,8 @@ module Prawn
   class LabelSheet
     # config options
     class Configuration
+      # Default layout key
+      # @return [String] the default key
       attr_accessor :default_layout
       attr_writer :layouts
 
@@ -13,7 +15,9 @@ module Prawn
         @default_layout = 'Avery7160'
       end
 
-      # @return [Hash]
+      # Layout definitions
+      #
+      # @return [{String => Hash}]
       def layouts
         @layouts ||= YAML.load_file(File.expand_path('layouts.yml', __dir__))
       end

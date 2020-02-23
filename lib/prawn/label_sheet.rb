@@ -15,15 +15,18 @@ module Prawn
     class Error < StandardError; end
 
     # Override Prawn::View#document
-
-    attr_reader :document, :layout
+    attr_reader :document
+    attr_reader :layout
 
     using Polyfill(Hash: %w[#transform_keys])
 
     # Render and persist a set of label sheets
     #
+    # @param filename [String] Name of output file
     # @param labels [Enumerable, CSV]
     # @param options (see #initialize)
+    # @yieldparam doc (see #make_label)
+    # @yieldparam item (see #make_label)
     def self.generate(filename, labels, **options, &block)
       pdf = new(labels, options, &block)
       pdf.document.render_file(filename)
@@ -99,6 +102,8 @@ module Prawn
       r.divmod(@document.grid.columns)
     end
 
+    # Extract definition & provide defaults for required keys
+    #
     # @param layout_def [String, #to_h] layout definition or identifier
     # @return [Hash]
     # rubocop:disable Style/RescueModifier
