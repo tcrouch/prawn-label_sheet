@@ -2,11 +2,11 @@ inherit_gem:
   relaxed-rubocop: .rubocop.yml
 
 AllCops:
-  TargetRubyVersion: 2.4
+  TargetRubyVersion: 2.5
 
-Layout/AlignArguments:
+Layout/ArgumentAlignment:
   EnforcedStyle: with_fixed_indentation
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   EnforcedStyle: with_fixed_indentation
 Layout/MultilineMethodCallIndentation:
   EnforcedStyle: indented

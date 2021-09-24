@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'prawn'
-require 'polyfill'
 require 'prawn/label_sheet/version'
 require 'prawn/label_sheet/configuration'
 
@@ -17,8 +16,6 @@ module Prawn
     # Override Prawn::View#document
     attr_reader :document
     attr_reader :layout
-
-    using Polyfill(Hash: %w[#transform_keys])
 
     # Render and persist a set of label sheets
     #
