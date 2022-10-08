@@ -70,7 +70,7 @@ module Prawn
     # @param item [Proc, #[]]
     # @return [Boolean]
     def break_page?(item)
-      return unless @break_on
+      return false unless @break_on
 
       val = @break_on.is_a?(Proc) ? @break_on.call(item) : item[@break_on]
       return false if @last_val == val
