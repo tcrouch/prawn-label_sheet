@@ -16,10 +16,3 @@ Layout/MultilineOperationIndentation:
 Metrics/BlockLength:
   Exclude:
     - example/**/*.rb
-
-Style/TrivialAccessors:
-  Exclude:
-    - lib/prawn/label_sheet/configuration.rb
-Style/Documentation:
-  Exclude:
-    - lib/prawn/label_sheet/configuration.rb
