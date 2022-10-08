@@ -23,25 +23,22 @@ module Prawn
       end
     end
 
-    # Current configuration
-    #
-    # @return [Prawn::LabelSheet::Configuration]
-    def self.config
-      @config ||= Configuration.new
-    end
+    class << self
+      attr_writer :config
 
-    # Define configuration
-    #
-    # @param configuration [Prawn::LabelSheet::Configuration]
-    def self.config=(configuration)
-      @config = configuration
-    end
+      # Current configuration
+      #
+      # @return [Prawn::LabelSheet::Configuration]
+      def config
+        @config ||= Configuration.new
+      end
 
-    # Modify configuration
-    #
-    # @yieldparam config [Prawn::LabelSheet::Configuration]
-    def self.configure
-      yield config
+      # Modify configuration
+      #
+      # @yieldparam config [Prawn::LabelSheet::Configuration]
+      def configure
+        yield config
+      end
     end
   end
 end
