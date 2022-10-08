@@ -20,29 +20,28 @@ module Prawn
     # Render and persist a set of label sheets
     #
     # @param filename [String] Name of output file
-    # @param labels [Enumerable, CSV]
+    # @param labels (see #initialize)
     # @param options (see #initialize)
-    # @yieldparam doc (see #make_label)
-    # @yieldparam item (see #make_label)
+    # @yieldparam (see #initialize)
     def self.generate(filename, labels, **options, &block)
-      pdf = new(labels, options, &block)
+      pdf = new(labels, **options, &block)
       pdf.document.render_file(filename)
     end
 
     # @param labels [Enumerable] collection of labels
     # @option options [String] :layout
-    # @option options [Proc, Integer] :break_on
+    # @option options [Proc, Integer, String] :break_on
     # @option options [Prawn::Document] :document
-    def initialize(labels, **options)
+    # @yieldparam doc (see #make_label)
+    # @yieldparam item (see #make_label)
+    def initialize(labels, **options, &block)
       @layout = setup_layout(options[:layout]).merge(info: options[:info])
       @document = setup_document(options[:document], @layout)
 
       @count = 0
       @break_on = options[:break_on]
 
-      labels.each do |label|
-        make_label(label, options) { |pdf, item| yield pdf, item }
-      end
+      labels.each { |label| make_label(label, options, &block) }
     end
 
     # Generate individual label
