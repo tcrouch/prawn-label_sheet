@@ -35,10 +35,7 @@ module Prawn
     # @option options [Prawn::Document] :document
     def initialize(labels, **options)
       @layout = setup_layout(options[:layout]).merge(info: options[:info])
-
-      @document = resolve_document(options[:document])
-      @document.define_grid @layout
-      # @document.on_page_create { self.instance_variable_set :@count, 0 }
+      @document = setup_document(options[:document], @layout)
 
       @count = 0
       @break_on = options[:break_on]
@@ -126,11 +123,13 @@ module Prawn
     end
 
     # @param doc [Prawn::Document, nil]
+    # @param layout [Hash]
     # @return [Prawn::Document]
-    def resolve_document(doc)
-      return doc.start_new_page(@layout) if doc
-
-      Document.new @layout
+    def setup_document(doc, layout)
+      doc&.start_new_page(layout)
+      doc ||= Document.new layout
+      doc.define_grid layout
+      doc
     end
 
     # @return [Prawn::LabelSheet::Configuration]
