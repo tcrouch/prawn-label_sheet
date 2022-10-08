@@ -20,32 +20,28 @@ module Prawn
     # Render and persist a set of label sheets
     #
     # @param filename [String] Name of output file
-    # @param labels [Enumerable, CSV]
+    # @param labels (see #initialize)
     # @param options (see #initialize)
-    # @yieldparam doc (see #make_label)
-    # @yieldparam item (see #make_label)
+    # @yieldparam (see #initialize)
     def self.generate(filename, labels, **options, &block)
-      pdf = new(labels, options, &block)
+      pdf = new(labels, **options, &block)
       pdf.document.render_file(filename)
     end
 
     # @param labels [Enumerable] collection of labels
     # @option options [String] :layout
-    # @option options [Proc, Integer] :break_on
+    # @option options [Proc, Integer, String] :break_on
     # @option options [Prawn::Document] :document
-    def initialize(labels, **options)
+    # @yieldparam doc (see #make_label)
+    # @yieldparam item (see #make_label)
+    def initialize(labels, **options, &block)
       @layout = setup_layout(options[:layout]).merge(info: options[:info])
-
-      @document = resolve_document(options[:document])
-      @document.define_grid @layout
-      # @document.on_page_create { self.instance_variable_set :@count, 0 }
+      @document = setup_document(options[:document], @layout)
 
       @count = 0
       @break_on = options[:break_on]
 
-      labels.each do |label|
-        make_label(label, options) { |pdf, item| yield pdf, item }
-      end
+      labels.each { |label| make_label(label, options, &block) }
     end
 
     # Generate individual label
@@ -57,9 +53,7 @@ module Prawn
     def make_label(item, _options)
       break_page if break_page?(item)
 
-      @document.grid(*gridref).bounding_box do
-        yield @document, item
-      end
+      @document.grid(*gridref).bounding_box { yield @document, item }
       @count += 1
     end
 
@@ -70,7 +64,7 @@ module Prawn
     # @param item [Proc, #[]]
     # @return [Boolean]
     def break_page?(item)
-      return unless @break_on
+      return false unless @break_on
 
       val = @break_on.is_a?(Proc) ? @break_on.call(item) : item[@break_on]
       return false if @last_val == val
@@ -103,19 +97,16 @@ module Prawn
     #
     # @param layout_def [String, #to_h] layout definition or identifier
     # @return [Hash]
-    # rubocop:disable Style/RescueModifier
     def setup_layout(layout_def)
       defs = resolve_layout(layout_def).slice(
         'page_size', 'columns', 'rows',
         'top_margin', 'bottom_margin',
         'left_margin', 'right_margin',
         'column_gutter', 'row_gutter'
-      )
-      {
-        page_size: 'A4', top_margin: 40, left_margin: 20
-      }.merge!(defs.transform_keys { |key| key.to_sym rescue key })
+      ).transform_keys(&:to_sym)
+
+      { page_size: 'A4', top_margin: 40, left_margin: 20 }.merge!(defs)
     end
-    # rubocop:enable Style/RescueModifier
 
     # Lookup layout definition
     #
@@ -129,11 +120,13 @@ module Prawn
     end
 
     # @param doc [Prawn::Document, nil]
+    # @param layout [Hash]
     # @return [Prawn::Document]
-    def resolve_document(doc)
-      return doc.start_new_page(@layout) if doc
-
-      Document.new @layout
+    def setup_document(doc, layout)
+      doc&.start_new_page(layout)
+      doc ||= Document.new layout
+      doc.define_grid layout
+      doc
     end
 
     # @return [Prawn::LabelSheet::Configuration]
