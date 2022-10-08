@@ -54,9 +54,7 @@ module Prawn
     def make_label(item, _options)
       break_page if break_page?(item)
 
-      @document.grid(*gridref).bounding_box do
-        yield @document, item
-      end
+      @document.grid(*gridref).bounding_box { yield @document, item }
       @count += 1
     end
 
