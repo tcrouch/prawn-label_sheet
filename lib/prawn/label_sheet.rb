@@ -103,19 +103,16 @@ module Prawn
     #
     # @param layout_def [String, #to_h] layout definition or identifier
     # @return [Hash]
-    # rubocop:disable Style/RescueModifier
     def setup_layout(layout_def)
       defs = resolve_layout(layout_def).slice(
         'page_size', 'columns', 'rows',
         'top_margin', 'bottom_margin',
         'left_margin', 'right_margin',
         'column_gutter', 'row_gutter'
-      )
-      {
-        page_size: 'A4', top_margin: 40, left_margin: 20
-      }.merge!(defs.transform_keys { |key| key.to_sym rescue key })
+      ).transform_keys(&:to_sym)
+
+      { page_size: 'A4', top_margin: 40, left_margin: 20 }.merge!(defs)
     end
-    # rubocop:enable Style/RescueModifier
 
     # Lookup layout definition
     #
