@@ -34,7 +34,7 @@ module Prawn
     # @option options [Proc, Integer] :break_on
     # @option options [Prawn::Document] :document
     def initialize(labels, **options)
-      @layout = setup_layout(options[:layout])
+      @layout = setup_layout(options[:layout]).merge(info: options[:info])
 
       @document = resolve_document(options[:document])
       @document.define_grid @layout
