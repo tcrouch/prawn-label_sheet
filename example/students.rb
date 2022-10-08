@@ -4,12 +4,15 @@ require 'bundler/setup'
 require 'csv'
 require 'prawn/label_sheet'
 
-csv = CSV.read(File.join(__dir__, 'students.csv'))
+csv = CSV.read(File.join(__dir__, 'students.csv'), headers: true)
 out = File.join(__dir__, 'students.pdf')
 
-Prawn::LabelSheet.generate(out, csv, break_on: 3) do |pdf, data|
-  last_name, first_name, class_name, student_id = data
-
+Prawn::LabelSheet.generate(
+  out,
+  csv,
+  break_on: 'class',
+  info: { Title: 'Students by class' }
+) do |pdf, data|
   b = pdf.bounds
   full_width = b.width - 12
   half_width = (full_width / 2).floor - 1
@@ -18,7 +21,7 @@ Prawn::LabelSheet.generate(out, csv, break_on: 3) do |pdf, data|
 
   pdf.move_down 12
   pdf.indent(6) do
-    pdf.text_box "#{last_name} #{first_name}",
+    pdf.text_box "#{data['firstName']} #{data['lastName']}",
       at: [b.left, pdf.cursor],
       width: full_width, height: 12,
       overflow: :truncate
@@ -35,11 +38,11 @@ Prawn::LabelSheet.generate(out, csv, break_on: 3) do |pdf, data|
       width: half_width, height: 8
   end
   pdf.move_down 9
-  pdf.text_box student_id,
+  pdf.text_box data["studentId"],
     at: [b.left, pdf.cursor],
     width: half_width, height: 10,
     overflow: :shrink_to_fit
-  pdf.text_box class_name,
+  pdf.text_box data["class"],
     at: [b.right - half_width, pdf.cursor],
     width: half_width, height: 10,
     overflow: :shrink_to_fit
